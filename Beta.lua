@@ -1,0 +1,142 @@
+local TS,UIS,Players=game:GetService("TweenService"),game:GetService("UserInputService"),game:GetService("Players")
+local LP=Players.LocalPlayer
+local CYAN,PURP,BG,GREEN=Color3.fromHex("00f3ff"),Color3.fromHex("b026ff"),Color3.fromHex("0a0510"),Color3.fromRGB(0,255,120)
+local function N(c,p,par) local i=Instance.new(c) for k,v in pairs(p or {}) do i[k]=v end if par then i.Parent=par end return i end
+local function Tw(o,t,p) local tw=TS:Create(o,TweenInfo.new(t,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),p) tw:Play() return tw end
+local function Round(o,r) return N("UICorner",{CornerRadius=UDim.new(0,r or 8)},o) end
+local function Stroke(o,c,t,tr) return N("UIStroke",{Color=c or CYAN,Thickness=t or 1,Transparency=tr or 0.3,ApplyStrokeMode=Enum.ApplyStrokeMode.Border},o) end
+pcall(function() local old=(gethui and gethui() or game:GetService("CoreGui")):FindFirstChild("ZipHubUI") if old then old:Destroy() end end)
+local Gui=N("ScreenGui",{Name="ZipHubUI",ResetOnSpawn=false,ZIndexBehavior=Enum.ZIndexBehavior.Sibling})
+Gui.Parent=(pcall(function() return gethui end) and gethui and gethui()) or (pcall(function() return game:GetService("CoreGui").Name end) and game:GetService("CoreGui")) or LP:WaitForChild("PlayerGui")
+
+local Main=N("Frame",{Name="Main",Size=UDim2.fromOffset(600,400),Position=UDim2.fromScale(.5,.5),AnchorPoint=Vector2.new(.5,.5),BackgroundColor3=BG,BackgroundTransparency=.1,ClipsDescendants=true,Active=true},Gui)
+Round(Main,14) Stroke(Main,PURP,1.5,.2)
+N("UIGradient",{Color=ColorSequence.new(Color3.fromHex("1a0b2e"),BG),Rotation=45},Main)
+local Bg=N("Frame",{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,ZIndex=0},Main)
+for i=1,8 do local s=N("Frame",{Size=UDim2.fromOffset(math.random(20,60),math.random(20,60)),Position=UDim2.fromScale(math.random(),math.random()),BackgroundColor3=(i%2==0) and CYAN or PURP,BackgroundTransparency=.88,Rotation=math.random(0,90),ZIndex=0},Bg)
+ Round(s,i%2==0 and 30 or 6) task.spawn(function() while s.Parent do Tw(s,math.random(4,8),{Position=UDim2.fromScale(math.random(),math.random()),Rotation=math.random(0,180)}).Completed:Wait() end end) end
+do local d,ds,sp N("Frame",{Size=UDim2.new(1,0,0,40),BackgroundTransparency=1,ZIndex=5},Main).InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then d,ds,sp=true,i.Position,Main.Position end end)
+ UIS.InputChanged:Connect(function(i) if d and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then local dl=i.Position-ds Main.Position=UDim2.new(sp.X.Scale,sp.X.Offset+dl.X,sp.Y.Scale,sp.Y.Offset+dl.Y) end end)
+ UIS.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then d=false end end) end
+
+local Side=N("Frame",{Size=UDim2.new(0,150,1,0),BackgroundColor3=Color3.fromRGB(10,5,20),BackgroundTransparency=.4,ZIndex=2},Main)
+Stroke(Side,PURP,1,.7)
+local LogoH=N("Frame",{Size=UDim2.new(1,0,0,80),BackgroundTransparency=1,ZIndex=3},Side)
+N("ImageLabel",{Size=UDim2.fromOffset(40,40),Position=UDim2.new(.5,-18,0,16),BackgroundTransparency=1,Image="rbxassetid://123456789",ImageColor3=CYAN,ImageTransparency=.6,ZIndex=3},LogoH)
+N("ImageLabel",{Size=UDim2.fromOffset(36,36),Position=UDim2.new(.5,-18,0,14),BackgroundTransparency=1,Image="rbxassetid://123456789",ImageColor3=Color3.new(1,1,1),ZIndex=4},LogoH)
+N("TextLabel",{Size=UDim2.new(1,0,0,16),Position=UDim2.fromOffset(0,56),BackgroundTransparency=1,Text="ZIP HUB",Font=Enum.Font.GothamBlack,TextSize=14,TextColor3=CYAN,ZIndex=3},LogoH)
+local TabList=N("Frame",{Size=UDim2.new(1,-20,1,-100),Position=UDim2.fromOffset(10,90),BackgroundTransparency=1,ZIndex=3},Side)
+N("UIListLayout",{Padding=UDim.new(0,8)},TabList)
+local Content=N("Frame",{Size=UDim2.new(1,-150,1,0),Position=UDim2.fromOffset(150,0),BackgroundTransparency=1,ZIndex=2},Main)
+local Header=N("Frame",{Size=UDim2.new(1,0,0,50),BackgroundTransparency=1,ZIndex=3},Content)
+local Dot=N("Frame",{Size=UDim2.fromOffset(10,10),Position=UDim2.new(1,-110,0,20),BackgroundColor3=GREEN,ZIndex=4},Header) Round(Dot,5)
+N("TextLabel",{Size=UDim2.fromOffset(80,50),Position=UDim2.new(1,-95,0,0),BackgroundTransparency=1,Text="Connected",Font=Enum.Font.GothamMedium,TextSize=13,TextColor3=GREEN,TextXAlignment=Enum.TextXAlignment.Left,ZIndex=4},Header)
+task.spawn(function() while Dot.Parent do Tw(Dot,.8,{BackgroundTransparency=.7,Size=UDim2.fromOffset(12,12),Position=UDim2.new(1,-111,0,19)}).Completed:Wait() Tw(Dot,.8,{BackgroundTransparency=0,Size=UDim2.fromOffset(10,10),Position=UDim2.new(1,-110,0,20)}).Completed:Wait() end end)
+local Title=N("TextLabel",{Size=UDim2.new(0,200,0,50),Position=UDim2.fromOffset(20,0),BackgroundTransparency=1,Text="",Font=Enum.Font.GothamBold,TextSize=18,TextColor3=Color3.new(1,1,1),TextXAlignment=Enum.TextXAlignment.Left,ZIndex=4},Header)
+
+local function CreateCard(parent,title,desc)
+ local c=N("Frame",{Size=UDim2.new(1,-10,0,desc and 62 or 50),BackgroundColor3=Color3.fromRGB(25,12,45),BackgroundTransparency=.5,ZIndex=4},parent)
+ Round(c,8) Stroke(c,PURP,1,.5)
+ N("TextLabel",{Size=UDim2.new(1,-70,0,20),Position=UDim2.fromOffset(12,8),BackgroundTransparency=1,Text=title,Font=Enum.Font.GothamBold,TextSize=14,TextColor3=Color3.new(1,1,1),TextXAlignment=Enum.TextXAlignment.Left,ZIndex=5},c)
+ if desc then N("TextLabel",{Size=UDim2.new(1,-70,0,16),Position=UDim2.fromOffset(12,30),BackgroundTransparency=1,Text=desc,Font=Enum.Font.Gotham,TextSize=11,TextColor3=Color3.fromRGB(160,150,190),TextXAlignment=Enum.TextXAlignment.Left,ZIndex=5},c) end return c
+end
+local function CreateToggle(parent,text,desc,default,cb)
+ local c=CreateCard(parent,text,desc) local on=default or false
+ local tr=N("TextButton",{Size=UDim2.fromOffset(44,22),Position=UDim2.new(1,-56,.5,-11),Text="",AutoButtonColor=false,BackgroundColor3=Color3.fromRGB(40,30,60),ZIndex=5},c) Round(tr,11)
+ local ts=Stroke(tr,PURP,1,.4)
+ local th=N("Frame",{Size=UDim2.fromOffset(16,16),Position=UDim2.fromOffset(3,3),BackgroundColor3=Color3.fromRGB(180,170,200),ZIndex=6},tr) Round(th,8)
+ local glow=Stroke(th,CYAN,2,1)
+ local function set(v,silent) on=v Tw(th,.2,{Position=on and UDim2.fromOffset(25,3) or UDim2.fromOffset(3,3),BackgroundColor3=on and CYAN or Color3.fromRGB(180,170,200)}) Tw(tr,.2,{BackgroundColor3=on and Color3.fromRGB(0,90,100) or Color3.fromRGB(40,30,60)}) Tw(ts,.2,{Color=on and CYAN or PURP}) Tw(glow,.2,{Transparency=on and .2 or 1}) if cb and not silent then task.spawn(cb,on) end end
+ tr.MouseButton1Click:Connect(function() set(not on) end) set(on,true) return c,set
+end
+local function CreateSlider(parent,text,min,max,def,cb)
+ local c=CreateCard(parent,text,nil) c.Size=UDim2.new(1,-10,0,62)
+ local val=N("TextLabel",{Size=UDim2.fromOffset(50,20),Position=UDim2.new(1,-62,0,8),BackgroundTransparency=1,Text=tostring(def),Font=Enum.Font.GothamBold,TextSize=13,TextColor3=CYAN,TextXAlignment=Enum.TextXAlignment.Right,ZIndex=5},c)
+ local bar=N("Frame",{Size=UDim2.new(1,-28,0,6),Position=UDim2.new(0,14,0,42),BackgroundColor3=Color3.fromRGB(40,30,60),ZIndex=5},c) Round(bar,3)
+ local fill=N("Frame",{Size=UDim2.fromScale((def-min)/(max-min),1),BackgroundColor3=CYAN,ZIndex=6},bar) Round(fill,3)
+ N("UIGradient",{Color=ColorSequence.new(PURP,CYAN)},fill)
+ local th=N("Frame",{Size=UDim2.fromOffset(16,16),Position=UDim2.new(1,0,.5,0),AnchorPoint=Vector2.new(.5,.5),BackgroundColor3=Color3.new(1,1,1),ZIndex=7},fill) Round(th,8) Stroke(th,CYAN,3,.1)
+ local drag=false
+ local function upd(x) local r=math.clamp((x-bar.AbsolutePosition.X)/bar.AbsoluteSize.X,0,1) local v=math.floor(min+(max-min)*r+.5) fill.Size=UDim2.fromScale(r,1) val.Text=tostring(v) if cb then cb(v) end end
+ bar.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then drag=true upd(i.Position.X) end end)
+ UIS.InputChanged:Connect(function(i) if drag and (i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch) then upd(i.Position.X) end end)
+ UIS.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then drag=false end end) return c
+end
+local function CreateTab(name,color,icon)
+ local btn=N("TextButton",{Size=UDim2.new(1,0,0,38),BackgroundColor3=Color3.fromRGB(25,12,45),BackgroundTransparency=.5,Text=icon.."  "..name,Font=Enum.Font.GothamMedium,TextSize=13,TextColor3=Color3.fromRGB(180,170,200),AutoButtonColor=false,ZIndex=4},TabList)
+ Round(btn,8) local st=Stroke(btn,color,1,.8)
+ local page=N("ScrollingFrame",{Size=UDim2.new(1,-20,1,-60),Position=UDim2.fromOffset(10,52),BackgroundTransparency=1,BorderSizePixel=0,ScrollBarThickness=3,ScrollBarImageColor3=CYAN,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y,Visible=false,ZIndex=3},Content)
+ N("UIListLayout",{Padding=UDim.new(0,8)},page) N("UIPadding",{PaddingTop=UDim.new(0,2),PaddingRight=UDim.new(0,4)},page) return {btn=btn,st=st,page=page,name=name,color=color}
+end
+local Tabs={CreateTab("Automation",CYAN,"⚡"),CreateTab("Player",PURP,"👤"),CreateTab("Visuals",CYAN,"👁")}
+local Active
+local function Select(t) if Active==t then return end for _,o in ipairs(Tabs) do local a=o==t o.page.Visible=a Tw(o.st,.25,{Transparency=a and 0 or .8,Thickness=a and 2 or 1}) Tw(o.btn,.25,{TextColor3=a and o.color or Color3.fromRGB(180,170,200),BackgroundTransparency=a and .3 or .5}) end Title.Text=t.name Active=t end
+for _,t in ipairs(Tabs) do t.btn.MouseButton1Click:Connect(function() Select(t) end) end
+local ZipHub = {}
+ZipHub.States = { AutoSteal=false, InstantSteal=false, AutoPlaceEgg=false, AutoTreadmill=false, AutoHatch=false, AutoSell=false, AutoFuse=false, AutoHitPlayer=false, ESP={Eggs=false,Guards=false,Players=false}, Speed=16, Jump=50 }
+local RS,HS=game:GetService("ReplicatedStorage"),game:GetService("HttpService")
+local function getRemote(path) local parts = string.split(path, "/") local current = RS:FindFirstChild("Packages") if not current then return nil end current = current:FindFirstChild("Networking") if not current then return nil end for _, part in ipairs(parts) do current = current:FindFirstChild(part) if not current then return nil end end return current end
+local R={ AskHatch=getRemote("RF/EggWorld/AskHatch"), AskFinishHatch=getRemote("RF/EggWorld/AskFinishHatch"), AskPlaceEgg=getRemote("RF/EggWorld/AskPlaceEgg"), AskFieldEggCarry=getRemote("RF/EggWorld/AskFieldEggCarry"), AskFieldEggDrop=getRemote("RF/EggWorld/AskFieldEggDrop"), AskSkipGrowth=getRemote("RF/EggWorld/AskSkipGrowth"), SubmitClipView=getRemote("RE/Treadmill/SubmitClipView"), AskSlowToggleSet=getRemote("RF/Treadmill/AskSlowToggleSet"), SellEveryPet=getRemote("RE/PetSatchel/SellEveryPet"), SellPet=getRemote("RE/PetSatchel/SellPet"), OfferFullSale=getRemote("RF/Haul/OfferFullSatchelSale"), BeginFuse=getRemote("RF/Fusery/BeginFuse"), ConfirmBriefing=getRemote("RF/Fusery/ConfirmBriefing"), FinishReveal=getRemote("RF/Fusery/FinishReveal"), BatSwing=getRemote("RE/BatSwing/Trigger"), ToolTrigger=getRemote("RE/ToolTrigger/Trigger") }
+local function safeInvoke(r,...) if not r then return nil end local ok,res=pcall(function() return r:InvokeServer(...) end) return ok and res or nil end
+local function safeFire(r,...) if not r then return end pcall(function() r:FireServer(...) end) end
+local function getChar() local c=LP.Character or LP.CharacterAdded:Wait() local h=c:FindFirstChildOfClass("Humanoid") local hrp=c:FindFirstChild("HumanoidRootPart") or c:WaitForChild("HumanoidRootPart",5) return c,h,hrp end
+local eggCache, guardCache, playerCache = {}, {}, {}
+local lastRefresh = 0
+local function refreshCache(force) local now = tick() if not force and (now - lastRefresh) < 3 then return end lastRefresh = now
+    local neweggs = {} for _,o in ipairs(workspace:GetDescendants()) do if o:IsA("Model") and o.PrimaryPart and o.Name:lower():find("egg") then neweggs[#neweggs+1]=o end end eggCache = neweggs
+    local plrChars = {} for _,p in ipairs(Players:GetPlayers()) do if p.Character then plrChars[p.Character]=true end end
+    local newguards = {} for _,o in ipairs(workspace:GetDescendants()) do if o:IsA("Model") and o:FindFirstChildOfClass("Humanoid") and not plrChars[o] then local n=o.Name:lower() if n:find("guard") or n:find("enemy") then newguards[#newguards+1]=o end end end guardCache = newguards
+    local newplrs = {} for _,p in ipairs(Players:GetPlayers()) do if p~=LP and p.Character then newplrs[#newplrs+1]=p.Character end end playerCache = newplrs end
+local function getNearestEgg(maxD) maxD=maxD or 2000 local _,_,hrp=getChar() if not hrp then return nil end local myPos = hrp.Position local best,bestD=nil,maxD for _,o in ipairs(eggCache) do if o.Parent and o.PrimaryPart then local ok,pos = pcall(function() return o.PrimaryPart.Position end) if ok and pos then local d=(pos-myPos).Magnitude if d<bestD then best,bestD=o,d end end end end return best end
+local function getNearestPlayer(maxD) maxD=maxD or 30 local _,_,hrp=getChar() if not hrp then return nil end local myPos = hrp.Position local best,bestD=nil,maxD for _,p in ipairs(Players:GetPlayers()) do if p~=LP and p.Character then local t=p.Character:FindFirstChild("HumanoidRootPart") local h=p.Character:FindFirstChildOfClass("Humanoid") if t and t.Parent and h and h.Health>0 then local ok,pos = pcall(function() return t.Position end) if ok and pos then local d=(pos-myPos).Magnitude if d<bestD then best,bestD=p,d end end end end end return best end
+function ZipHub.AutoSteal() local egg=getNearestEgg(2000) if not egg then return end local _,_,hrp=getChar() if not hrp then return end pcall(function() hrp.CFrame=egg.PrimaryPart.CFrame*CFrame.new(0,3,0) end) task.wait(0.08) safeInvoke(R.AskFieldEggCarry, egg.Name) end
+function ZipHub.InstantSteal() local egg=getNearestEgg(2000) if not egg then return end local _,_,hrp=getChar() if not hrp then return end pcall(function() hrp.CFrame=egg.PrimaryPart.CFrame*CFrame.new(0,3,0) end) safeInvoke(R.AskFieldEggCarry, egg.Name) safeInvoke(R.AskPlaceEgg, 1) end
+function ZipHub.AutoPlaceEgg() safeInvoke(R.AskPlaceEgg, 1) end
+function ZipHub.AutoTreadmill() safeInvoke(R.AskSlowToggleSet,false) safeFire(R.SubmitClipView) end
+function ZipHub.AutoHatch() local r=safeInvoke(R.AskHatch) if r~=nil then task.wait(0.15) safeInvoke(R.AskFinishHatch) end end
+function ZipHub.AutoSell() safeFire(R.SellEveryPet) end
+function ZipHub.AutoFuse() safeInvoke(R.BeginFuse) task.wait(0.3) safeInvoke(R.ConfirmBriefing) task.wait(0.5) safeInvoke(R.FinishReveal) end
+function ZipHub.AutoHitPlayer() local target=getNearestPlayer(30) if not target then return end safeFire(R.BatSwing, target.Name) safeFire(R.ToolTrigger, target.Name) end
+ZipHub.ESPData={Eggs={},Guards={},Players={}}
+ZipHub.DrawingOK=pcall(function() return Drawing.new("Text") end)
+local function mkText() if not ZipHub.DrawingOK then return nil end local ok,d=pcall(function() return Drawing.new("Text") end) return ok and d or nil end
+local function dispose(d) if d and d.Text then pcall(function() d.Text:Remove() end) end end
+local function updateType(key,list,color,label) local tbl=ZipHub.ESPData[key] local cam=workspace.CurrentCamera local seen={} for _,obj in ipairs(list) do if obj and obj.Parent then seen[obj]=true local d=tbl[obj] if not d then local t=mkText() if not t then return end t.Size=16 t.Center=true t.Outline=true t.OutlineColor=Color3.new(0,0,0) t.Color=color d={Text=t} tbl[obj]=d end local part = obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChild("HumanoidRootPart")) or (obj:IsA("BasePart") and obj) if part and cam then local sp,onScreen=cam:WorldToViewportPoint(part.Position+Vector3.new(0,3,0)) d.Text.Text=label(obj) d.Text.Position=Vector2.new(sp.X,sp.Y) d.Text.Visible=onScreen end end end for obj,d in pairs(tbl) do if not seen[obj] then dispose(d) tbl[obj]=nil end end end
+function ZipHub.ESPUpdate() if not ZipHub.DrawingOK then return end if ZipHub.States.ESP.Eggs then updateType("Eggs",eggCache,CYAN,function(o) return "Egg: "..o.Name end) end if ZipHub.States.ESP.Guards then updateType("Guards",guardCache,PURP,function(o) return "Guard: "..o.Name end) end if ZipHub.States.ESP.Players then updateType("Players",playerCache,Color3.fromRGB(255,40,40),function(o) return o.Name end) end end
+function ZipHub.SetESP(kind,on) ZipHub.States.ESP[kind]= on and true or false if not on then for k,d in pairs(ZipHub.ESPData[kind]) do dispose(d) ZipHub.ESPData[kind][k]=nil end end end
+function ZipHub.SetSpeed(v) ZipHub.States.Speed=tonumber(v) or 16 local _,h=getChar() if h then h.WalkSpeed=ZipHub.States.Speed end end
+function ZipHub.SetJump(v) ZipHub.States.Jump =tonumber(v) or 50 local _,h=getChar() if h then h.JumpPower =ZipHub.States.Jump end end
+function ZipHub.ServerHop() local ok,body=pcall(function() return HS:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")) end) if not ok or not body or not body.data then return false end for _,s in ipairs(body.data) do if s.id~=game.JobId and s.playing<s.maxPlayers then pcall(function() TS:TeleportToPlaceInstance(game.PlaceId,s.id,LP) end) return true end end end
+function ZipHub.Init()
+    refreshCache(true)
+    task.spawn(function() while true do pcall(function() refreshCache(false) end) task.wait(1) end end)
+    task.spawn(function() while true do task.wait(0.5) if ZipHub.States.AutoSteal then pcall(ZipHub.AutoSteal) end end end)
+    task.spawn(function() while true do if ZipHub.States.InstantSteal then pcall(ZipHub.InstantSteal) task.wait(0.15) else task.wait(0.3) end end end)
+    task.spawn(function() while true do task.wait(1) if ZipHub.States.AutoPlaceEgg then pcall(ZipHub.AutoPlaceEgg) end end end)
+    task.spawn(function() while true do task.wait(0.1) if ZipHub.States.AutoTreadmill then pcall(ZipHub.AutoTreadmill) end end end)
+    task.spawn(function() while true do task.wait(0.4) if ZipHub.States.AutoHatch then pcall(ZipHub.AutoHatch) end end end)
+    task.spawn(function() while true do task.wait(3) if ZipHub.States.AutoSell then pcall(ZipHub.AutoSell) end end end)
+    task.spawn(function() while true do task.wait(4) if ZipHub.States.AutoFuse then pcall(ZipHub.AutoFuse) end end end)
+    task.spawn(function() while true do task.wait(0.4) if ZipHub.States.AutoHitPlayer then pcall(ZipHub.AutoHitPlayer) end end end)
+    task.spawn(function() while true do task.wait(0.15) pcall(ZipHub.ESPUpdate) end end)
+    task.spawn(function() while true do task.wait(0.5) local _,h=getChar() if h then if h.WalkSpeed~=ZipHub.States.Speed then h.WalkSpeed=ZipHub.States.Speed end if h.JumpPower~=ZipHub.States.Jump then h.JumpPower=ZipHub.States.Jump end end end end)
+    LP.CharacterAdded:Connect(function() task.wait(1) local _,h=getChar() if h then h.WalkSpeed=ZipHub.States.Speed h.JumpPower=ZipHub.States.Jump end end)
+end
+local A,P,V=Tabs[1].page,Tabs[2].page,Tabs[3].page
+CreateToggle(A,"Auto Steal","Tự động cướp trứng",false,function(v) ZipHub.States.AutoSteal=v end)
+CreateToggle(A,"Instant Steal","Cướp siêu tốc",false,function(v) ZipHub.States.InstantSteal=v end)
+CreateToggle(A,"Auto Place Egg","Tự đặt trứng",false,function(v) ZipHub.States.AutoPlaceEgg=v end)
+CreateToggle(A,"Auto Treadmill","Tự đập máy tập",false,function(v) ZipHub.States.AutoTreadmill=v end)
+CreateToggle(A,"Auto Hatch","Tự ấp trứng",false,function(v) ZipHub.States.AutoHatch=v end)
+CreateToggle(A,"Auto Sell","Tự bán pet",false,function(v) ZipHub.States.AutoSell=v end)
+CreateToggle(A,"Auto Fuse","Tự dung hợp",false,function(v) ZipHub.States.AutoFuse=v end)
+CreateToggle(A,"Auto Hit Player","Tự đánh người gần nhất",false,function(v) ZipHub.States.AutoHitPlayer=v end)
+CreateSlider(P,"WalkSpeed",16,200,16,function(v) ZipHub.SetSpeed(v) end)
+CreateSlider(P,"JumpPower",50,300,50,function(v) ZipHub.SetJump(v) end)
+CreateToggle(V,"ESP Eggs","Hiển thị vị trí trứng",false,function(v) ZipHub.SetESP("Eggs",v) end)
+CreateToggle(V,"ESP Guards","Hiển thị lính canh",false,function(v) ZipHub.SetESP("Guards",v) end)
+CreateToggle(V,"ESP Players","Hiển thị người chơi",false,function(v) ZipHub.SetESP("Players",v) end)
+Select(Tabs[1])
+local sc=N("UIScale",{Scale=.8},Main) Tw(sc,.35,{Scale=1})
+UIS.InputBegan:Connect(function(i,gp) if not gp and i.KeyCode==Enum.KeyCode.RightShift then Main.Visible=not Main.Visible end end)
+pcall(ZipHub.Init)
