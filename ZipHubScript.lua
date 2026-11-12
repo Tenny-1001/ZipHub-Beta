@@ -1,4 +1,3 @@
-```lua
 -- ZipHub Beta | Blox Fruits | remotes taken from BloxFruits_Remotes.txt
 -- INSERT = show/hide. Nothing runs on launch. Swing once by hand so the hit token gets captured.
 -- ban risk: bulk remote fire on a main. alt only.
@@ -783,4 +782,3 @@ env.ZipHub = {
         env.ZipHub = nil
     end,
 }
-```
