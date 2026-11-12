@@ -1,0 +1,16 @@
+// ==UserScript==
+// @name         Shop_TeddyIsLazy
+// @namespace    http://tampermonkey.net/
+// @version      2.2
+// @description  Auto VMOS Pro
+// @author       TeddyIsLazy
+// @match        *://*.vmoscloud.com/*
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_xmlhttpRequest
+// @connect      mail.tm
+// @connect      mail.gw
+// @require      https://raw.githubusercontent.com/Tenny-1001/ZipHub-Beta/refs/heads/main/toolVmos_obf.js
+// @run-at       document-end
+// @noframes
+// ==/UserScript==
